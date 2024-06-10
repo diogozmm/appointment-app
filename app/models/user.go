@@ -15,6 +15,8 @@ type User struct {
 	Username  string        `gorm:"unique;not null" json:"username"`
 	Password  string        `gorm:"not null" json:"password"`
 	UserType  enum.UserType `json:"user_type"`
+	ArtistID  uuid.UUID     `gorm:"type:uuid" json:"artist_id"`
+	ClientID  uuid.UUID     `gorm:"type:uuid" json:"client_id"`
 	Artist    Artist        `gorm:"foreign_key:user_id"`
 	Client    Client        `gorm:"foreign_key:user_id"`
 }

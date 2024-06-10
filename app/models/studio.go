@@ -1,17 +1,20 @@
 package models
 
 import (
+	"appointment-app/app/models/shared"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type Studio struct {
-	ID           uuid.UUID  `gorm:"primary_key" json:"id"`
+	ID           uuid.UUID  `gorm:"type:uuid;primary_key" json:"id"`
 	CreatedAt    time.Time  `json:"created_at"`
 	UpdatedAt    time.Time  `json:"updated_at"`
-	DeletedAt    *time.Time `sql:"index" json:"deleted_at,omitempty"`
+	DeletedAt    *time.Time `gorm:"index" json:"deleted_at,omitempty"`
 	Name         string     `gorm:"unique;not null" json:"name"`
 	SocialNumber string     `json:"socialNumber"`
-	Artists      []Artist   `gorm:"foreign_key:studio_Id"`
+	AddressID    uuid.UUID  `json:"address_id"`
+	Artists      []Artist   `gorm:"foreignKey:StudioID"`
+	Address      shared.Address
 }
