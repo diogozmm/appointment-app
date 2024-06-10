@@ -1,0 +1,367 @@
+basePath: /
+definitions:
+  enum.UserType:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - Client
+    - Artist
+  models.Appointment:
+    properties:
+      artist_id:
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      time:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.Artist:
+    properties:
+      address:
+        $ref: '#/definitions/shared.Address'
+      addressId:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      socialNumber:
+        type: string
+      studio:
+        $ref: '#/definitions/models.Studio'
+      studio_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Studio:
+    properties:
+      artists:
+        items:
+          $ref: '#/definitions/models.Artist'
+        type: array
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      socialNumber:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.TokenResponse:
+    properties:
+      error:
+        type: string
+      token:
+        type: string
+    type: object
+  requests.AddressRequest:
+    properties:
+      city:
+        type: string
+      country:
+        type: string
+      state:
+        type: string
+      street_name:
+        type: string
+      street_number:
+        type: integer
+    type: object
+  requests.ArtistRegisterRequest:
+    properties:
+      address:
+        $ref: '#/definitions/requests.AddressRequest'
+      artist_name:
+        type: string
+      social_number:
+        type: string
+      studio_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - address
+    - artist_name
+    - social_number
+    - user_id
+    type: object
+  requests.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  requests.RegisterRequest:
+    properties:
+      password:
+        type: string
+      type:
+        $ref: '#/definitions/enum.UserType'
+      username:
+        type: string
+    required:
+    - password
+    - type
+    - username
+    type: object
+  responses.ArtistResponse:
+    properties:
+      address:
+        $ref: '#/definitions/requests.AddressRequest'
+      artist_name:
+        type: string
+      social_number:
+        type: string
+      studio_name:
+        type: string
+    required:
+    - artist_name
+    - social_number
+    - studio_name
+    type: object
+  responses.RegisterResponse:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  responses.UserResponse:
+    properties:
+      user_type:
+        $ref: '#/definitions/enum.UserType'
+      username:
+        type: string
+    required:
+    - user_type
+    - username
+    type: object
+  shared.Address:
+    properties:
+      address_id:
+        type: string
+      artist_id:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      state:
+        type: string
+      street_name:
+        type: string
+      street_number:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is an API for booking appointments with artists.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Appointment Booking API
+  version: "1.0"
+paths:
+  /appointments:
+    get:
+      description: Get a list of all appointments for the logged-in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Appointment'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Get all appointments
+      tags:
+      - appointments
+    post:
+      consumes:
+      - application/json
+      description: Book an appointment with an artist
+      parameters:
+      - description: Appointment
+        in: body
+        name: appointment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Appointment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Appointment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Book an appointment
+      tags:
+      - appointments
+  /artists:
+    get:
+      description: Get a list of all artists
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Artist'
+            type: array
+      summary: Get all artists
+      tags:
+      - artists
+  /artists/register:
+    post:
+      description: Create an artist based on user
+      parameters:
+      - description: Artist
+        in: body
+        name: artist
+        required: true
+        schema:
+          $ref: '#/definitions/requests.ArtistRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ArtistResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Register an artist
+      tags:
+      - artist-register
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user with username and password
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/requests.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TokenResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Login a user
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with username and password
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/requests.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - auth
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Find all users in db
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.UserResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Find all users
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,41 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Output of the "go get" command
+bin/
+pkg/
+
+# Compiled object files and libraries
+*.o
+*.a
+
+# Directories for dependencies
+vendor/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# IDE and editor-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Go module files
+go.sum
+go.work.sum
+go.work
+
+# Environment variables
+.env
