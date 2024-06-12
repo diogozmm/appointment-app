@@ -5,6 +5,7 @@ import (
 	"appointment-app/app/models/requests"
 	"appointment-app/app/models/responses"
 	"appointment-app/app/repositories"
+	"fmt"
 )
 
 type ArtistService interface {
@@ -34,7 +35,11 @@ func (a *artistService) GetAllArtistByStudio(studioId string) ([]responses.Artis
 }
 
 func (a *artistService) GetAllArtists() ([]responses.ArtistResponse, error) {
-	artists := a.artistRepository.GetAllArtists()
+	artists, err := a.artistRepository.GetAllArtists()
+	if err != nil {
+		return nil, err
+	}
+
 	var result []responses.ArtistResponse
 
 	for _, artist := range *artists {
@@ -64,8 +69,11 @@ func (a *artistService) GetArtistByStudio(studioId string) (responses.ArtistResp
 
 func (a *artistService) RegisterArtist(request requests.ArtistRegisterRequest) (*responses.ArtistResponse, error) {
 	artist, err := a.artistRepository.GetArtistByName(request.Name)
-	if err != nil || artist != nil {
-		return &responses.ArtistResponse{}, err
+	if err != nil {
+		return nil, err // An error occurred while trying to get the artist
+	}
+	if artist != nil {
+		return nil, fmt.Errorf("artist already exists") // The artist already exists
 	}
 
 	model := models.ToArtistModel(request)

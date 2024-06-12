@@ -31,12 +31,12 @@ import (
 
 func main() {
 	database.InitDB()
-
+	utils := config.InitUtils()
 	// Initiate repositories
 	repos := config.InitRepositories(database.DB)
 
 	// Initiate services
-	services := config.InitServices(*repos)
+	services := config.InitServices(*repos, *utils)
 
 	// Initiate controllers
 	controllers := config.InitControllers(*services)

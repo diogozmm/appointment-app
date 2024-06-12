@@ -17,14 +17,15 @@ type UserService interface {
 
 type userService struct {
 	userRepository repositories.UserRepository
+	utils          shared.Utils
 }
 
-func InitUserService(userRepo repositories.UserRepository) UserService {
-	return &userService{userRepo}
+func InitUserService(userRepo repositories.UserRepository, utils shared.Utils) UserService {
+	return &userService{userRepo, utils}
 }
 
 func (s *userService) Register(request requests.RegisterRequest) error {
-	hashedPassword, err := shared.HashPassword(request.Password)
+	hashedPassword, err := s.utils.HashPassword(request.Password)
 	if err != nil {
 		return err
 	}
@@ -37,10 +38,10 @@ func (s *userService) Login(request requests.LoginRequest) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if !shared.CheckPasswordHash(request.Password, user.Password) {
+	if !s.utils.CheckPasswordHash(request.Password, user.Password) {
 		return "", errors.New("invalid credentials")
 	}
-	return shared.GenerateJWT(user.ID), nil
+	return s.utils.GenerateJWT(user.ID), nil
 }
 
 func (s *userService) FindAll() ([]responses.UserResponse, error) {

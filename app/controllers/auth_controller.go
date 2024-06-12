@@ -11,7 +11,7 @@ import (
 )
 
 type AuthController struct {
-	authService services.AuthService
+	AuthService services.AuthService
 }
 
 func InitAuthController(authService services.AuthService) *AuthController {
@@ -35,7 +35,7 @@ func (a *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	token := a.authService.Login(request)
+	token := a.AuthService.Login(request)
 
 	if token.Error != "" {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: token.Error})

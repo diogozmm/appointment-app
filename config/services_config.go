@@ -11,11 +11,11 @@ type Services struct {
 	AppointmentService services.AppointmentService
 }
 
-func InitServices(repos Repositories) *Services {
+func InitServices(repos Repositories, utils Utils) *Services {
 	return &Services{
 		ArtistService:      services.InitArtistService(repos.ArtistRepo),
-		UserService:        services.InitUserService(repos.UserRepo),
-		AuthService:        services.InitAuthService(repos.UserRepo),
+		UserService:        services.InitUserService(repos.UserRepo, utils.Utils),
+		AuthService:        services.InitAuthService(repos.UserRepo, utils.Utils),
 		AppointmentService: services.InitAppointmentService(repos.AppointmentRepo),
 	}
 }

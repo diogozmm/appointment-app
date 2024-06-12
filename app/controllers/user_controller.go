@@ -11,7 +11,7 @@ import (
 )
 
 type UserController struct {
-	userService services.UserService
+	UserService services.UserService
 }
 
 func InitUserController(userService services.UserService) *UserController {
@@ -36,7 +36,7 @@ func (f *UserController) Register(c *gin.Context) {
 		return
 	}
 
-	notCreated := f.userService.Register(request)
+	notCreated := f.UserService.Register(request)
 	if notCreated != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: notCreated.Error()})
 		return
@@ -56,7 +56,7 @@ func (f *UserController) Register(c *gin.Context) {
 // @Router /users [get]
 func (f *UserController) FindAll(c *gin.Context) {
 
-	response, err := f.userService.FindAll()
+	response, err := f.UserService.FindAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return

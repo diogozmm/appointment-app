@@ -9,7 +9,7 @@ import (
 )
 
 type ArtistRepository interface {
-	GetAllArtists() *[]models.Artist
+	GetAllArtists() (*[]models.Artist, error)
 	GetArtistByName(artistname string) (*models.Artist, error)
 	GetAllArtistByStudio(studioId string) (*[]models.Artist, error)
 	GetArtistByStudio(studioId string) (*models.Artist, error)
@@ -31,10 +31,13 @@ func (a *artistRepository) GetAllArtistByStudio(studioId string) (*[]models.Arti
 	return &studio.Artists, nil
 }
 
-func (a *artistRepository) GetAllArtists() *[]models.Artist {
+func (a *artistRepository) GetAllArtists() (*[]models.Artist, error) {
 	var artists []models.Artist
-	a.db.Find(&artists)
-	return &artists
+	if err := a.db.Find(&artists).Error; err != nil {
+		log.Fatal("Error:", err)
+		return nil, err
+	}
+	return &artists, nil
 }
 
 func (a *artistRepository) GetArtistByName(artistname string) (*models.Artist, error) {
